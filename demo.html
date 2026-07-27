@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr" data-fr-scheme="system">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RGAAudit · démo du skill colors</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.11.2/dist/dsfr/dsfr.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.11.2/dist/utility/utility.min.css" />
+<style>
+  /* Custom minimal styles for the demo-specific visuals (phone mockups + swatches).
+     Everything else uses native DSFR components. */
+  .swatch { display:inline-block; width: 12px; height: 12px; border-radius: 2px; vertical-align: middle; margin-right: 4px; border: 1px solid rgba(0,0,0,.2); }
+  .ratio { font-variant-numeric: tabular-nums; font-weight: 700; }
+  .ratio-fail { color: var(--text-default-error); }
+  .ratio-ok { color: var(--text-default-success); }
+  .file { font-family: monospace; font-size: .8em; color: var(--text-mention-grey); display:block; margin-top:2px; }
+
+  .phone { background: #fff; border-radius: 20px; padding: 20px; color: #111; border: 7px solid #000; position: relative; min-height: 320px; }
+  .phone .cap { position: absolute; top: -7px; left: 50%; transform: translateX(-50%); width: 100px; height: 14px; background: #000; border-radius: 0 0 10px 10px; }
+  .p-title { font-size: 22px; font-weight: 700; color: #1A1A1A; margin: 8px 0 4px; }
+  .status { display: flex; align-items: center; gap: 8px; margin: 12px 0; font-size: 14px; color:#1A1A1A;}
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .p-cta { border: 0; border-radius: 12px; padding: 14px; width: 100%; font-size: 18px; font-weight: 600; }
+  .p-promo { border-radius: 8px; padding: 12px; margin: 14px 0; font-weight: 700; }
+
+  /* Sober note block, no coloured left stripe (avoids the "generated template" look). */
+  .note { background: var(--background-alt-grey); border-radius: 8px; padding: 12px 16px; font-size: 14px; }
+  .note strong { font-weight: 700; }
+  .note--sep { border-top: 1px solid var(--border-default-grey); background: transparent; border-radius: 0; padding: 12px 0 0; }
+  .lead { font-size: 1.125rem; line-height: 1.6; color: var(--text-mention-grey); max-width: 70ch; }
+
+  .before .p-helper { font-size: 14px; color: #999999; }
+  .before .p-promo { background:#0000FF; color:#FF0000; }
+  .before .p-cta { background:#F5A623; color:#FFFFFF; }
+  .after .p-helper { font-size: 14px; color: #767676; }
+  .after .p-promo { background:#1E3A8A; color:#FFFFFF; }
+  .after .p-cta { background:#F5A623; color:#1A1A1A; }
+</style>
+</head>
+<body>
+
+<header role="banner" class="fr-header">
+  <div class="fr-header__body">
+    <div class="fr-container">
+      <div class="fr-header__body-row">
+        <div class="fr-header__brand fr-enlarge-link">
+          <div class="fr-header__brand-top">
+            <div class="fr-header__logo">
+              <p class="fr-logo">République<br>Française</p>
+            </div>
+          </div>
+          <div class="fr-header__service">
+            <a href="#" title="Accueil RGAAudit">
+              <p class="fr-header__service-title">RGAAudit</p>
+            </a>
+            <p class="fr-header__service-tagline">Audit et remédiation d'accessibilité, web et mobile · Theodo</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main role="main" class="fr-container fr-my-6w">
+
+  <h1>RGAAudit</h1>
+
+  <p class="lead">
+    <a href="https://github.com/theodo-group/claude-plugins/tree/main/plugins/accessibility" target="_blank" rel="noopener"><strong>RGAAudit</strong></a>
+    s'appuie sur le <strong>RGAA</strong> pour le web, sur le <strong>RAAM</strong> et la norme
+    <strong>EN 301&nbsp;549</strong> pour le mobile, et propose les corrections directement dans le code. L'effort se déplace
+    du constat vers la remédiation, et la déclaration d'accessibilité devient cohérente d'un canal à l'autre.
+  </p>
+
+  <ul class="fr-tags-group fr-mt-2w">
+    <li><p class="fr-tag">RGAA · web</p></li>
+    <li><p class="fr-tag">RAAM · mobile</p></li>
+    <li><p class="fr-tag">EN 301 549</p></li>
+    <li><p class="fr-tag">Correctifs dans le code</p></li>
+  </ul>
+
+  <h2 class="fr-mt-6w">Démonstration : analyse couleur d'un écran mobile</h2>
+  <p class="lead">
+    Exemple sur l'écran React Native <code>CheckoutScreen</code>. Le skill <code>colors</code> mesure les contrastes,
+    détecte les indicateurs « couleur seule » et les couleurs sur-stimulantes, puis propose la correction. Le résultat avant et après figure ci-dessous.
+  </p>
+
+  <!-- §1 -->
+  <h2 class="fr-mt-6w">1. L'écran analysé, avant et après</h2>
+  <div class="fr-grid-row fr-grid-row--gutters">
+    <div class="fr-col-12 fr-col-md-6">
+      <p><span class="fr-badge fr-badge--error">5 violations</span></p>
+      <div class="phone before">
+        <div class="cap"></div>
+        <div class="p-title">Checkout</div>
+        <div class="p-helper">Free delivery on orders over 50 €</div>
+        <div class="status"><span class="dot" style="background:#2E7D32"></span> Order status</div>
+        <div class="p-promo">FLASH SALE -40% TODAY ONLY</div>
+        <button class="p-cta">Pay 42,00 €</button>
+      </div>
+    </div>
+    <div class="fr-col-12 fr-col-md-6">
+      <p><span class="fr-badge fr-badge--success">Conforme</span></p>
+      <div class="phone after">
+        <div class="cap"></div>
+        <div class="p-title">Checkout</div>
+        <div class="p-helper">Free delivery on orders over 50 €</div>
+        <div class="status"><span class="dot" style="background:#2E7D32"></span> ✓ Order confirmed</div>
+        <div class="p-promo">FLASH SALE -40% TODAY ONLY</div>
+        <button class="p-cta">Pay 42,00 €</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- §2 -->
+  <h2 class="fr-mt-6w">2. Contraste <span class="fr-text--sm fr-text--regular">(WCAG 1.4.3 / 1.4.11)</span></h2>
+  <div class="fr-table fr-table--bordered">
+    <table>
+      <caption>Ratios de contraste mesurés sur CheckoutScreen</caption>
+      <thead>
+        <tr><th scope="col">Élément</th><th scope="col">Couleurs</th><th scope="col">Ratio</th><th scope="col">Seuil</th><th scope="col">Verdict</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Label CTA<span class="file">CheckoutScreen.tsx:42</span></td>
+          <td><span class="swatch" style="background:#FFFFFF"></span>#FFFFFF / <span class="swatch" style="background:#F5A623"></span>#F5A623</td>
+          <td class="ratio ratio-fail">2.03:1</td><td>4.5:1 (≥3 gras)</td><td><span class="fr-badge fr-badge--sm fr-badge--error">Échec</span></td>
+        </tr>
+        <tr>
+          <td>Texte d'aide<span class="file">CheckoutScreen.tsx:38</span></td>
+          <td><span class="swatch" style="background:#999999"></span>#999999 / <span class="swatch" style="background:#FFFFFF"></span>#FFFFFF</td>
+          <td class="ratio ratio-fail">2.85:1</td><td>4.5:1</td><td><span class="fr-badge fr-badge--sm fr-badge--error">Échec</span></td>
+        </tr>
+        <tr>
+          <td>Bannière promo<span class="file">CheckoutScreen.tsx:52</span></td>
+          <td><span class="swatch" style="background:#FF0000"></span>#FF0000 / <span class="swatch" style="background:#0000FF"></span>#0000FF</td>
+          <td class="ratio ratio-fail">2.15:1</td><td>4.5:1</td><td><span class="fr-badge fr-badge--sm fr-badge--error">Échec</span></td>
+        </tr>
+        <tr>
+          <td>Titre « Checkout »</td>
+          <td><span class="swatch" style="background:#1A1A1A"></span>#1A1A1A / <span class="swatch" style="background:#FFFFFF"></span>#FFFFFF</td>
+          <td class="ratio ratio-ok">17.4:1</td><td>3:1</td><td><span class="fr-badge fr-badge--sm fr-badge--success">OK</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note note--sep"><strong>Correctifs :</strong> CTA → texte <code>#1A1A1A</code> sur l'orange = <span class="ratio-ok ratio">8.59:1</span> ·
+    Texte d'aide → <code>#767676</code> = <span class="ratio-ok ratio">4.54:1</span>.</p>
+
+  <!-- §3 -->
+  <h2 class="fr-mt-6w">3. Couleur seule &amp; sensibilité sensorielle</h2>
+  <div class="fr-grid-row fr-grid-row--gutters">
+    <div class="fr-col-12 fr-col-md-6">
+      <div class="fr-card fr-card--shadow">
+        <div class="fr-card__body"><div class="fr-card__content">
+          <h3 class="fr-card__title">Couleur seule (WCAG 1.4.1)</h3>
+          <p class="fr-card__desc">
+            <strong>StatusBadge</strong> <span class="file">StatusBadge.tsx:16</span><br>
+            Le statut succès/erreur n'est porté que par la couleur de la pastille (vert/rouge). Invisible en deutéranopie / protanopie.
+          </p>
+          <div class="fr-card__start"><p class="fr-badge fr-badge--error fr-badge--sm">Échec</p></div>
+        </div></div>
+      </div>
+      <p class="fr-text--sm fr-mt-1w"><strong>Fix :</strong> icône ✓/✕ ou texte d'état, en plus de la couleur.</p>
+    </div>
+    <div class="fr-col-12 fr-col-md-6">
+      <div class="fr-card fr-card--shadow">
+        <div class="fr-card__body"><div class="fr-card__content">
+          <h3 class="fr-card__title">Sur-stimulation sensorielle</h3>
+          <p class="fr-card__desc">
+            <strong>Bannière promo</strong> <span class="file">CheckoutScreen.tsx:52</span><br>
+            Rouge pur sur bleu pur : paire complémentaire saturée qui « vibre » (chromostéréopsie). Fatigue visuelle, migraine.
+          </p>
+          <div class="fr-card__start"><p class="fr-badge fr-badge--error fr-badge--sm">Échec</p></div>
+        </div></div>
+      </div>
+      <p class="fr-text--sm fr-mt-1w"><strong>Fix :</strong> <code>#FFFFFF</code> sur <code>#1E3A8A</code> ≈ <span class="ratio-ok ratio">10:1</span>, non-vibrant.</p>
+    </div>
+  </div>
+
+  <!-- §4 -->
+  <h2 class="fr-mt-6w">4. Résultats par thème (light / dark)</h2>
+  <div class="fr-table fr-table--bordered">
+    <table>
+      <caption>Validation indépendante des tokens en mode clair et sombre</caption>
+      <thead><tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>textPrimary</code> / <code>background</code><span class="file">theme.ts:19</span></td>
+          <td><span class="swatch" style="background:#1A1A1A"></span>#1A1A1A / #FFFFFF → <span class="ratio ratio-ok">17.4:1</span></td>
+          <td><span class="swatch" style="background:#333333"></span>#333333 / #000000 → <span class="ratio ratio-fail">1.66:1</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note fr-mt-2w"><strong>Régression en mode sombre.</strong> Le token passe en clair (17.4:1) mais devient quasi illisible en sombre (1.66:1). Correctif : <code>#E6E6E6</code> sur noir ≈ 16:1.</p>
+
+  <!-- Bilan -->
+  <h2 class="fr-mt-6w">Bilan</h2>
+  <div class="fr-grid-row fr-grid-row--gutters">
+    <div class="fr-col-6 fr-col-md-2"><div class="fr-tile fr-tile--sm"><div class="fr-tile__body"><div class="fr-tile__content"><p class="fr-display--xs fr-m-0" style="color:var(--text-default-error)">5</p><p class="fr-tile__detail">violations</p></div></div></div></div>
+    <div class="fr-col-6 fr-col-md-2"><div class="fr-tile fr-tile--sm"><div class="fr-tile__body"><div class="fr-tile__content"><p class="fr-display--xs fr-m-0">3</p><p class="fr-tile__detail">contraste</p></div></div></div></div>
+    <div class="fr-col-6 fr-col-md-2"><div class="fr-tile fr-tile--sm"><div class="fr-tile__body"><div class="fr-tile__content"><p class="fr-display--xs fr-m-0">1</p><p class="fr-tile__detail">couleur seule</p></div></div></div></div>
+    <div class="fr-col-6 fr-col-md-2"><div class="fr-tile fr-tile--sm"><div class="fr-tile__body"><div class="fr-tile__content"><p class="fr-display--xs fr-m-0">1</p><p class="fr-tile__detail">sensorielle</p></div></div></div></div>
+    <div class="fr-col-6 fr-col-md-2"><div class="fr-tile fr-tile--sm"><div class="fr-tile__body"><div class="fr-tile__content"><p class="fr-display--xs fr-m-0">1</p><p class="fr-tile__detail">régression dark</p></div></div></div></div>
+  </div>
+
+  <p class="note fr-mt-3w">Outil d'<strong>apprentissage</strong> : n'assure ni conformité automatique ni couverture exhaustive.</p>
+
+</main>
+
+<footer class="fr-footer" role="contentinfo">
+  <div class="fr-container">
+    <div class="fr-footer__body">
+      <div class="fr-footer__brand">
+        <p class="fr-logo">République<br>Française</p>
+      </div>
+      <div class="fr-footer__content">
+        <p class="fr-footer__content-desc">
+          Démo <code>plugins/accessibility</code> · skill <code>colors</code> · ratios calculés selon WCAG 2.1.
+          Installation : <code>/plugin install accessibility@theodo-group-claude-plugins</code>
+        </p>
+      </div>
+    </div>
+    <div class="fr-footer__bottom">
+      <p class="fr-footer__bottom-copy">Design system : DSFR. Usage réservé aux sites de l'État à titre de démonstration.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
